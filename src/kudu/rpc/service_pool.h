@@ -92,6 +92,11 @@ class ServicePool : public RpcService {
 
   const std::string service_name() const;
 
+  /**
+   * Dump the current contents of the service queue
+   */
+  std::string RpcServiceQueueToString() const;
+
  private:
   void RunThread();
   void RejectTooBusy(InboundCall* c);

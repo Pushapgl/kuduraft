@@ -243,6 +243,7 @@ void Peer::SendNextRequest(bool even_if_queue_empty) {
       request_.committed_index() : kMinimumOpIdIndex;
 
   if (PREDICT_FALSE(!s.ok())) {
+    failed_attempts_++;
     VLOG_WITH_PREFIX_UNLOCKED(1) << s.ToString();
     return;
   }

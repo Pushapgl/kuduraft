@@ -129,12 +129,16 @@ void ServicePool::RejectTooBusy(InboundCall* c) {
   KLOG_EVERY_N_SECS(WARNING, 300) << err_msg;
   c->RespondFailure(ErrorStatusPB::ERROR_SERVER_TOO_BUSY,
                     Status::ServiceUnavailable(err_msg));
-  DLOG(INFO) << err_msg << " Contents of service queue:\n"
-             << service_queue_.ToString();
+  VLOG(2) << err_msg << " Contents of service queue:\n"
+          << service_queue_.ToString();
 
   if (too_busy_hook_) {
     too_busy_hook_();
   }
+}
+
+std::string ServicePool::RpcServiceQueueToString() const {
+  return service_queue_.ToString();
 }
 
 RpcMethodInfo* ServicePool::LookupMethod(const RemoteMethod& method) {

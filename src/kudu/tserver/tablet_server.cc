@@ -27,12 +27,14 @@
 #ifdef FB_DO_NOT_REMOVE
 #include "kudu/cfile/block_cache.h"
 #endif
+#include "kudu/consensus/consensus.service.h"
 #include "kudu/fs/error_manager.h"
 #include "kudu/fs/fs_manager.h"
 #include "kudu/gutil/bind.h"
 #include "kudu/gutil/bind_helpers.h"
 #include "kudu/gutil/strings/substitute.h"
 #include "kudu/rpc/service_if.h"
+#include "kudu/rpc/service_pool.h"
 #ifdef FB_DO_NOT_REMOVE
 #include "kudu/tserver/heartbeater.h"
 #include "kudu/tserver/scanners.h"
@@ -206,6 +208,15 @@ void TabletServer::Shutdown() {
     LOG(INFO) << name << " shutdown complete.";
     initted_ = false;
   }
+}
+
+std::string TabletServer::ConsensusServiceRpcQueueToString() const {
+  const kudu::rpc::ServicePool* pool = rpc_server_->service_pool(
+     kudu::consensus::ConsensusServiceIf::static_service_name());
+  if (pool) {
+    return pool->RpcServiceQueueToString();
+  }
+  return "";
 }
 
 } // namespace tserver
